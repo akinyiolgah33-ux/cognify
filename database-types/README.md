@@ -1,5 +1,3 @@
-# @firebase/database
-
-This is the Firebase Realtime Database component of the Firebase JS SDK. 
+# @firebase/database-types
 
 **This package is not intended for direct usage, and should only be used via the officially supported [firebase](https://www.npmjs.com/package/firebase) package.**
