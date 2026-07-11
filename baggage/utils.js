@@ -1,19 +1,23 @@
+"use strict";
 /*
  * Copyright The OpenTelemetry Authors
  * SPDX-License-Identifier: Apache-2.0
  */
-import { DiagAPI } from '../api/diag';
-import { BaggageImpl } from './internal/baggage-impl';
-import { baggageEntryMetadataSymbol } from './internal/symbol';
-const diag = DiagAPI.instance();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.baggageEntryMetadataFromString = exports.createBaggage = void 0;
+const diag_1 = require("../api/diag");
+const baggage_impl_1 = require("./internal/baggage-impl");
+const symbol_1 = require("./internal/symbol");
+const diag = diag_1.DiagAPI.instance();
 /**
  * Create a new Baggage with optional entries
  *
  * @param entries An array of baggage entries the new baggage should contain
  */
-export function createBaggage(entries = {}) {
-    return new BaggageImpl(new Map(Object.entries(entries)));
+function createBaggage(entries = {}) {
+    return new baggage_impl_1.BaggageImpl(new Map(Object.entries(entries)));
 }
+exports.createBaggage = createBaggage;
 /**
  * Create a serializable BaggageEntryMetadata object from a string.
  *
@@ -21,16 +25,17 @@ export function createBaggage(entries = {}) {
  *
  * @since 1.0.0
  */
-export function baggageEntryMetadataFromString(str) {
+function baggageEntryMetadataFromString(str) {
     if (typeof str !== 'string') {
         diag.error(`Cannot create baggage metadata from unknown type: ${typeof str}`);
         str = '';
     }
     return {
-        __TYPE__: baggageEntryMetadataSymbol,
+        __TYPE__: symbol_1.baggageEntryMetadataSymbol,
         toString() {
             return str;
         },
     };
 }
+exports.baggageEntryMetadataFromString = baggageEntryMetadataFromString;
 //# sourceMappingURL=utils.js.map

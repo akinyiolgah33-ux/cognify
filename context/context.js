@@ -1,13 +1,16 @@
+"use strict";
 /*
  * Copyright The OpenTelemetry Authors
  * SPDX-License-Identifier: Apache-2.0
  */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ROOT_CONTEXT = exports.createContextKey = void 0;
 /**
  * Get a key to uniquely identify a context value
  *
  * @since 1.0.0
  */
-export function createContextKey(description) {
+function createContextKey(description) {
     // The specification states that for the same input, multiple calls should
     // return different keys. Due to the nature of the JS dependency management
     // system, this creates problems where multiple versions of some package
@@ -16,6 +19,7 @@ export function createContextKey(description) {
     // Therefore, we use Symbol.for which returns the same key for the same input.
     return Symbol.for(description);
 }
+exports.createContextKey = createContextKey;
 class BaseContext {
     /**
      * Construct a new context which inherits values from an optional parent context.
@@ -44,5 +48,5 @@ class BaseContext {
  *
  * @since 1.0.0
  */
-export const ROOT_CONTEXT = new BaseContext();
+exports.ROOT_CONTEXT = new BaseContext();
 //# sourceMappingURL=context.js.map
