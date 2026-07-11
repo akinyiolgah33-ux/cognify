@@ -1,117 +1,129 @@
-# OpenTelemetry API for JavaScript
+# color-support
 
-<p align="center">
-<strong>
-<a href="https://open-telemetry.github.io/opentelemetry-js/modules/_opentelemetry_api.html">API Reference</a>
-&nbsp;&nbsp;&bull;&nbsp;&nbsp;
-<a href="https://opentelemetry.io/docs/instrumentation/js/">Documentation</a>
-</br>
-<a href="https://github.com/open-telemetry/opentelemetry-js/releases">
-    <img alt="NPM Release" src="https://img.shields.io/npm/v/@opentelemetry/api?color=brightgreen&logo=data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAIRlWElmTU0AKgAAAAgABQESAAMAAAABAAEAAAEaAAUAAAABAAAASgEbAAUAAAABAAAAUgEoAAMAAAABAAIAAIdpAAQAAAABAAAAWgAAAAAAAACQAAAAAQAAAJAAAAABAAOgAQADAAAAAQABAACgAgAEAAAAAQAAABigAwAEAAAAAQAAABgAAAAA8A2UOAAAAAlwSFlzAAAWJQAAFiUBSVIk8AAAAVlpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KTMInWQAABK5JREFUSA2dVm1sFEUYfmd2b%2Ff2Pkqghn5eEQWKrRgjpkYgpoRCLC0oxV5apAiGUDEpJvwxEQ2raWPU%2BKf8INU%2FRtEedwTCR9tYPloxGNJYTTQUwYqJ1aNpaLH3sXu3t7vjvFevpSqt7eSyM%2B%2FczvM8877PzB3APBoLgoDLsNePF56LBwqa07EKlDGg84CcWsI4CEbhNnDpAd951lXE2NkiNknCCTLv4HtzZuvPm1C%2FIKv4oDNXqNDHragety2XVzjECZsJARuBMyRzJrh1O0gQwLXuxofxsPSj4hG8fMLQo7bl9JJD8XZfC1E5yWFOMtd07dvX5kDwg6%2B2%2B%2BChq8txHGtfPoAp0gOFmhYoNFkHjn2TNUmrwRdna7W1QSkU8hvbGk4uThLrapaiLA2E6QY4u%2FlS9ItHfvJkxYsTMVtnAJLipYIWtVrcdX%2B8%2Bb8IVnPl%2FR81prbuPZ1jpYw%2B0aEUGSkdFsgyBIaFTXCm6nyaxMtJ4n%2BTeDhJzGqZtQZcuYDgqDwDbqb0JF9oRpIG1Oea3bC1Y6N3x%2FWV8Zh83emhCs%2B%2BhlaghDw%2B8w5UlYKq2lU7Pl8IkvS9KDqXmKmEwdMppVPKwGSEilmyAwJhRwWcq7wYC6z4wZ1rrEoMWxecdOjZWXeAQClBcYDN3NwVwD9pGwqUSyQgclcmxpNJqCuwLmDh3WtvPqXdlt%2B6Oz70HPGDNSNBee%2FEOen%2BrGbEFqDENBPDbtdCp0ukPANmzO0QQJYUpyS5IJJI3Hqt4maS%2BEB3199ozm8EDU%2F6fVNU2dQpdx3ZnKzeFXyaUTiasEV%2FgZMzJMjr3Z%2BWvAdQ%2Bhs%2Fzw9savimxUntDSaBdZ2f%2BIdbm1rlNY8esFffBit9HtK5%2FMejsrJVxikOXlb1Ukir2X%2BRbdkd1KG2Ixfn2Ql4JRmELnYK9mEM8G36fAA3xEQ89fxXihC8q%2BsAKi9jhHxNqagY2hiaYgRCm0f0QP7H4Fp11LSXiuBY2aYFlh0DeDIVVFUJQn5rCnpiNI2gvLxHnASn9DIVHJJlm5rXvQAGEo4zvKq2w5G1NxENN7jrft1oxMdekETjxdH2Z3x%2BVTVYsPb%2BO0C%2F9%2FauN6v2hNZw5b2UOmSbG5%2FrkC3LBA%2B1PdxFxORjxpQ81GcxKc%2BybVjEBvUJvaGJ7p7n5A5KSwe4AzkasA%2BcrmzFtowoIVTiLjANm8GDsrWW35ScI3JY8Urv83tnkF8JR0yLvEt2hO%2F0qNyy3Jb3YKeHeHeLeOuVLRpNF%2Bpkf85OW7%2FzJxWdXsbsKBUk2TC0BCPwMq5Q%2FCPvaJFkNS%2F1l1qUPe%2BuH3oD59erYGI%2FY4sce6KaXYElAIOLt%2B0O3t2%2B%2FxJDF1XvOlWGC1W1B8VMszbGfOvT5qaRRAIFK3BCO164nZ0uYLH2YjNN8thXS2v2BK9gTfD7jHVxzHr4roOlEvYYz9QIz%2BVl%2FsLDXInsctFsXjqIRnO2ZO387lxmIboLDZCJ59KLFliNIgh9ipt6tLg9SihpRPDO1ia5byw7de1aCQmF5geOQtK509rzfdwxaKOIq%2B73AvwCC5%2F5fcV4vo3%2B3LpMdtWHh0ywsJC%2FZGoCb8%2F9D8F%2FifgLLl8S8QWfU8cAAAAASUVORK5CYII%3D">
-  </a>
-</strong>
-</p>
+A module which will endeavor to guess your terminal's level of color
+support.
 
-This package provides everything needed to interact with the OpenTelemetry API, including all TypeScript interfaces, enums, and no-op implementations. It is intended for use both on the server and in the browser.
+[![Build Status](https://travis-ci.org/isaacs/color-support.svg?branch=master)](https://travis-ci.org/isaacs/color-support) [![Coverage Status](https://coveralls.io/repos/github/isaacs/color-support/badge.svg?branch=master)](https://coveralls.io/github/isaacs/color-support?branch=master)
 
-The methods in this package perform no operations by default. This means they can be safely called by a library or end-user application whether there is an SDK registered or not. In order to generate and export telemetry data, you will also need an SDK such as the [OpenTelemetry JS SDK][opentelemetry-js].
+This is similar to `supports-color`, but it does not read
+`process.argv`.
 
-## Tracing Quick Start
+1. If not in a node environment, not supported.
 
-### You Will Need
+2. If stdout is not a TTY, not supported, unless the `ignoreTTY`
+   option is set.
 
-- An application you wish to instrument
-- [OpenTelemetry JS SDK][opentelemetry-js]
-- Node.js >=8.5.0 (14+ is preferred) or an ECMAScript 5+ compatible browser
+3. If the `TERM` environ is `dumb`, not supported, unless the
+   `ignoreDumb` option is set.
 
-**Note:** ECMAScript 5+ compatibility is for this package only. Please refer to the documentation for the SDK you are using to determine its minimum ECMAScript version.
+4. If on Windows, then support 16 colors.
 
-**Note for library authors:** Only your end users will need an OpenTelemetry SDK. If you wish to support OpenTelemetry in your library, you only need to use the OpenTelemetry API. For more information, please read the [tracing documentation][docs-tracing].
+5. If using Tmux, then support 256 colors.
 
-### Install Dependencies
+7. Handle continuous-integration servers.  If `CI` or
+   `TEAMCITY_VERSION` are set in the environment, and `TRAVIS` is not
+   set, then color is not supported, unless `ignoreCI` option is set.
 
-```sh
-npm install @opentelemetry/api @opentelemetry/sdk-trace-base
-```
+6. Guess based on the `TERM_PROGRAM` environ.  These terminals support
+   16m colors:
 
-### Trace Your Application
+    - `iTerm.app` version 3.x supports 16m colors, below support 256
+    - `MacTerm` supports 16m colors
+    - `Apple_Terminal` supports 256 colors
+    - Have more things that belong on this list?  Send a PR!
 
-In order to get started with tracing, you will need to first register an SDK. The SDK you are using may provide a convenience method which calls the registration methods for you, but if you would like to call them directly they are documented here: [SDK registration methods][docs-sdk-registration].
+8. Make a guess based on the `TERM` environment variable.  Any
+   `xterm-256color` will get 256 colors.  Any screen, xterm, vt100,
+   color, ansi, cygwin, or linux `TERM` will get 16 colors.
 
-Once you have registered an SDK, you can start and end spans. A simple example of basic SDK registration and tracing a simple operation is below. The example should export spans to the console once per second. For more information, see the [tracing documentation][docs-tracing].
+9. If `COLORTERM` environment variable is set, then support 16 colors.
+
+10. At this point, we assume that color is not supported.
+
+## USAGE
 
 ```javascript
-const { trace }  = require("@opentelemetry/api");
-const { BasicTracerProvider, ConsoleSpanExporter, SimpleSpanProcessor }  = require("@opentelemetry/sdk-trace-base");
+var testColorSupport = require('color-support')
+var colorSupport = testColorSupport(/* options object */)
 
-// Create and register an SDK
-const provider = new BasicTracerProvider({
-  spanProcessors: [new SimpleSpanProcessor(new ConsoleSpanExporter())]
-});
-trace.setGlobalTracerProvider(provider);
-
-// Acquire a tracer from the global tracer provider which will be used to trace the application
-const name = 'my-application-name';
-const version = '0.1.0';
-const tracer = trace.getTracer(name, version);
-
-// Trace your application by creating spans
-async function operation() {
-  const span = tracer.startSpan("do operation");
-
-  // mock some work by sleeping 1 second
-  await new Promise((resolve, reject) => {
-    setTimeout(resolve, 1000);
-  })
-
-  span.end();
+if (!colorSupport) {
+  console.log('color is not supported')
+} else if (colorSupport.has16m) {
+  console.log('\x1b[38;2;102;194;255m16m colors\x1b[0m')
+} else if (colorSupport.has256) {
+  console.log('\x1b[38;5;119m256 colors\x1b[0m')
+} else if (colorSupport.hasBasic) {
+  console.log('\x1b[31mbasic colors\x1b[0m')
+} else {
+  console.log('this is impossible, but colors are not supported')
 }
-
-async function main() {
-  while (true) {
-    await operation();
-  }
-}
-
-main();
 ```
 
-## Version Compatibility
+If you don't have any options to set, you can also just look at the
+flags which will all be set on the test function itself.  (Of course,
+this doesn't return a falsey value when colors aren't supported, and
+doesn't allow you to set options.)
 
-Because the npm installer and node module resolution algorithm could potentially allow two or more copies of any given package to exist within the same `node_modules` structure, the OpenTelemetry API takes advantage of a variable on the `global` object to store the global API. When an API method in the API package is called, it checks if this `global` API exists and proxies calls to it if and only if it is a compatible API version. This means if a package has a dependency on an OpenTelemetry API version which is not compatible with the API used by the end user, the package will receive a no-op implementation of the API.
+```javascript
+var colorSupport = require('color-support')
 
-## Upgrade Guidelines
+if (colorSupport.has16m) {
+  console.log('\x1b[38;2;102;194;255m16m colors\x1b[0m')
+} else if (colorSupport.has256) {
+  console.log('\x1b[38;5;119m256 colors\x1b[0m')
+} else if (colorSupport.hasBasic) {
+  console.log('\x1b[31mbasic colors\x1b[0m')
+} else {
+  console.log('colors are not supported')
+}
+```
 
-### 0.21.0 to 1.0.0
+## Options
 
-No breaking changes
+You can pass in the following options.
 
-### 0.20.0 to 0.21.0
+* ignoreTTY - default false.  Ignore the `isTTY` check.
+* ignoreDumb - default false.  Ignore `TERM=dumb` environ check.
+* ignoreCI - default false.  Ignore `CI` environ check.
+* env - Object for environment vars. Defaults to `process.env`.
+* stream - Stream for `isTTY` check. Defaults to `process.stdout`.
+* term - String for `TERM` checking. Defaults to `env.TERM`.
+* alwaysReturn - default false.  Return an object when colors aren't
+  supported (instead of returning `false`).
+* level - A number from 0 to 3.  This will return a result for the
+  specified level.  This is useful if you want to be able to set the
+  color support level explicitly as a number in an environment
+  variable or config, but then use the object flags in your program.
+  Except for `alwaysReturn` to return an object for level 0, all other
+  options are ignored, since no checking is done if a level is
+  explicitly set.
 
-- [#78](https://github.com/open-telemetry/opentelemetry-js-api/issues/78) `api.context.bind` arguments reversed and `context` is now a required argument.
-- [#46](https://github.com/open-telemetry/opentelemetry-js-api/issues/46) Noop classes and singletons are no longer exported. To create a noop span it is recommended to use `api.trace.wrapSpanContext` with `INVALID_SPAN_CONTEXT` instead of using the `NOOP_TRACER`.
+## Return Value
 
-### 1.0.0-rc.3 to 0.20.0
+If no color support is available, then `false` is returned by default,
+unless the `alwaysReturn` flag is set to `true`.  This is so that the
+simple question of "can I use colors or not" can treat any truthy
+return as "yes".
 
-- Removing `TimedEvent` which was not part of spec
-- `HttpBaggage` renamed to `HttpBaggagePropagator`
-- [#45](https://github.com/open-telemetry/opentelemetry-js-api/pull/45) `Span#context` renamed to `Span#spanContext`
-- [#47](https://github.com/open-telemetry/opentelemetry-js-api/pull/47) `getSpan`/`setSpan`/`getSpanContext`/`setSpanContext` moved to `trace` namespace
-- [#55](https://github.com/open-telemetry/opentelemetry-js-api/pull/55) `getBaggage`/`setBaggage`/`createBaggage` moved to `propagation` namespace
+Otherwise, the return object has the following fields:
 
-## Useful links
+* `level` - A number from 0 to 3
+    * `0` - No color support
+    * `1` - Basic (16) color support
+    * `2` - 256 color support
+    * `3` - 16 million (true) color support
+* `hasBasic` - Boolean
+* `has256` - Boolean
+* `has16m` - Boolean
 
-- For more information on OpenTelemetry, visit: <https://opentelemetry.io/>
-- For more about OpenTelemetry JavaScript: <https://github.com/open-telemetry/opentelemetry-js>
-- For help or feedback on this project, join us in [GitHub Discussions][discussions-url]
+## CLI
 
-## License
+You can run the `color-support` bin from the command line which will
+just dump the values as this module calculates them in whatever env
+it's run.  It takes no command line arguments.
 
-Apache 2.0 - See [LICENSE][license-url] for more information.
+## Credits
 
-[opentelemetry-js]: https://github.com/open-telemetry/opentelemetry-js
-
-[discussions-url]: https://github.com/open-telemetry/opentelemetry-js/discussions
-[license-url]: https://github.com/open-telemetry/opentelemetry-js/blob/main/api/LICENSE
-[docs-tracing]: https://github.com/open-telemetry/opentelemetry-js/blob/main/doc/tracing.md
-[docs-sdk-registration]: https://github.com/open-telemetry/opentelemetry-js/blob/main/doc/sdk-registration.md
+This is a spiritual, if not actual, fork of
+[supports-color](http://npm.im/supports-color) by the ever prolific
+[Sindre Sorhus](http://npm.im/~sindresorhus).
