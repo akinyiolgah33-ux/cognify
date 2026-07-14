@@ -1,86 +1,60 @@
-import { EventEmitter } from 'events';
-import { Duplex, Readable, Writable } from 'stream';
-import { StatusObject } from './call-interface';
-import { EmitterAugmentation1 } from './events';
-import { Metadata } from './metadata';
-import { ObjectReadable, ObjectWritable, WriteCallback } from './object-stream';
-import { InterceptingCallInterface } from './client-interceptors';
-import { AuthContext } from './auth-context';
 /**
- * A type extending the built-in Error object with additional fields.
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-export type ServiceError = StatusObject & Error;
-/**
- * A base type for all user-facing values returned by client-side method calls.
- */
-export type SurfaceCall = {
-    call?: InterceptingCallInterface;
+import { APICallback, RequestType, ResultTuple, SimpleCallbackFunction } from './apitypes';
+export declare class OngoingCall {
+    callback: APICallback;
+    cancelFunc?: () => void;
+    completed: boolean;
+    /**
+     * OngoingCall manages callback, API calls, and cancellation
+     * of the API calls.
+     * @param {APICallback=} callback
+     *   The callback to be called asynchronously when the API call
+     *   finishes.
+     * @constructor
+     * @property {APICallback} callback
+     *   The callback function to be called.
+     * @private
+     */
+    constructor(callback: APICallback);
+    /**
+     * Cancels the ongoing promise.
+     */
     cancel(): void;
-    getPeer(): string;
-    getAuthContext(): AuthContext | null;
-} & EmitterAugmentation1<'metadata', Metadata> & EmitterAugmentation1<'status', StatusObject> & EventEmitter;
-/**
- * A type representing the return value of a unary method call.
- */
-export type ClientUnaryCall = SurfaceCall;
-/**
- * A type representing the return value of a server stream method call.
- */
-export type ClientReadableStream<ResponseType> = {
-    deserialize: (chunk: Buffer) => ResponseType;
-} & SurfaceCall & ObjectReadable<ResponseType>;
-/**
- * A type representing the return value of a client stream method call.
- */
-export type ClientWritableStream<RequestType> = {
-    serialize: (value: RequestType) => Buffer;
-} & SurfaceCall & ObjectWritable<RequestType>;
-/**
- * A type representing the return value of a bidirectional stream method call.
- */
-export type ClientDuplexStream<RequestType, ResponseType> = ClientWritableStream<RequestType> & ClientReadableStream<ResponseType>;
-/**
- * Construct a ServiceError from a StatusObject. This function exists primarily
- * as an attempt to make the error stack trace clearly communicate that the
- * error is not necessarily a problem in gRPC itself.
- * @param status
- */
-export declare function callErrorFromStatus(status: StatusObject, callerStack: string): ServiceError;
-export declare class ClientUnaryCallImpl extends EventEmitter implements ClientUnaryCall {
-    call?: InterceptingCallInterface;
+    /**
+     * Call calls the specified function. Result will be used to fulfill
+     * the promise.
+     *
+     * @param {SimpleCallbackFunction} func
+     *   A function for an API call.
+     * @param {Object} argument
+     *   A request object.
+     */
+    call(func: SimpleCallbackFunction, argument: RequestType): void;
+}
+export interface CancellablePromise<T> extends Promise<T> {
+    cancel(): void;
+}
+export declare class OngoingCallPromise extends OngoingCall {
+    promise: CancellablePromise<ResultTuple>;
+    /**
+     * GaxPromise is GRPCCallbackWrapper, but it holds a promise when
+     * the API call finishes.
+     * @constructor
+     * @private
+     */
     constructor();
-    cancel(): void;
-    getPeer(): string;
-    getAuthContext(): AuthContext | null;
-}
-export declare class ClientReadableStreamImpl<ResponseType> extends Readable implements ClientReadableStream<ResponseType> {
-    readonly deserialize: (chunk: Buffer) => ResponseType;
-    call?: InterceptingCallInterface;
-    constructor(deserialize: (chunk: Buffer) => ResponseType);
-    cancel(): void;
-    getPeer(): string;
-    getAuthContext(): AuthContext | null;
-    _read(_size: number): void;
-}
-export declare class ClientWritableStreamImpl<RequestType> extends Writable implements ClientWritableStream<RequestType> {
-    readonly serialize: (value: RequestType) => Buffer;
-    call?: InterceptingCallInterface;
-    constructor(serialize: (value: RequestType) => Buffer);
-    cancel(): void;
-    getPeer(): string;
-    getAuthContext(): AuthContext | null;
-    _write(chunk: RequestType, encoding: string, cb: WriteCallback): void;
-    _final(cb: Function): void;
-}
-export declare class ClientDuplexStreamImpl<RequestType, ResponseType> extends Duplex implements ClientDuplexStream<RequestType, ResponseType> {
-    readonly serialize: (value: RequestType) => Buffer;
-    readonly deserialize: (chunk: Buffer) => ResponseType;
-    call?: InterceptingCallInterface;
-    constructor(serialize: (value: RequestType) => Buffer, deserialize: (chunk: Buffer) => ResponseType);
-    cancel(): void;
-    getPeer(): string;
-    getAuthContext(): AuthContext | null;
-    _read(_size: number): void;
-    _write(chunk: RequestType, encoding: string, cb: WriteCallback): void;
-    _final(cb: Function): void;
 }

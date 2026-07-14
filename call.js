@@ -1,152 +1,119 @@
 "use strict";
-/*
- * Copyright 2019 gRPC authors.
+/**
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ClientDuplexStreamImpl = exports.ClientWritableStreamImpl = exports.ClientReadableStreamImpl = exports.ClientUnaryCallImpl = void 0;
-exports.callErrorFromStatus = callErrorFromStatus;
-const events_1 = require("events");
-const stream_1 = require("stream");
-const constants_1 = require("./constants");
-/**
- * Construct a ServiceError from a StatusObject. This function exists primarily
- * as an attempt to make the error stack trace clearly communicate that the
- * error is not necessarily a problem in gRPC itself.
- * @param status
- */
-function callErrorFromStatus(status, callerStack) {
-    const message = `${status.code} ${constants_1.Status[status.code]}: ${status.details}`;
-    const error = new Error(message);
-    const stack = `${error.stack}\nfor call at\n${callerStack}`;
-    return Object.assign(new Error(message), status, { stack });
+exports.OngoingCallPromise = exports.OngoingCall = void 0;
+const status_1 = require("./status");
+const googleError_1 = require("./googleError");
+class OngoingCall {
+    /**
+     * OngoingCall manages callback, API calls, and cancellation
+     * of the API calls.
+     * @param {APICallback=} callback
+     *   The callback to be called asynchronously when the API call
+     *   finishes.
+     * @constructor
+     * @property {APICallback} callback
+     *   The callback function to be called.
+     * @private
+     */
+    constructor(callback) {
+        this.callback = callback;
+        this.completed = false;
+    }
+    /**
+     * Cancels the ongoing promise.
+     */
+    cancel() {
+        if (this.completed) {
+            return;
+        }
+        this.completed = true;
+        if (this.cancelFunc) {
+            this.cancelFunc();
+        }
+        else {
+            const error = new googleError_1.GoogleError('cancelled');
+            error.code = status_1.Status.CANCELLED;
+            this.callback(error);
+        }
+    }
+    /**
+     * Call calls the specified function. Result will be used to fulfill
+     * the promise.
+     *
+     * @param {SimpleCallbackFunction} func
+     *   A function for an API call.
+     * @param {Object} argument
+     *   A request object.
+     */
+    call(func, argument) {
+        if (this.completed) {
+            return;
+        }
+        const canceller = func(argument, (err, response, next, rawResponse) => {
+            this.completed = true;
+            setImmediate(this.callback, err, response, next, rawResponse);
+        });
+        if (canceller instanceof Promise) {
+            canceller.catch(err => {
+                setImmediate(this.callback, new googleError_1.GoogleError(err), null, null, null);
+            });
+        }
+        this.cancelFunc = () => canceller.cancel();
+    }
 }
-class ClientUnaryCallImpl extends events_1.EventEmitter {
+exports.OngoingCall = OngoingCall;
+class OngoingCallPromise extends OngoingCall {
+    /**
+     * GaxPromise is GRPCCallbackWrapper, but it holds a promise when
+     * the API call finishes.
+     * @constructor
+     * @private
+     */
     constructor() {
-        super();
-    }
-    cancel() {
-        var _a;
-        (_a = this.call) === null || _a === void 0 ? void 0 : _a.cancelWithStatus(constants_1.Status.CANCELLED, 'Cancelled on client');
-    }
-    getPeer() {
-        var _a, _b;
-        return (_b = (_a = this.call) === null || _a === void 0 ? void 0 : _a.getPeer()) !== null && _b !== void 0 ? _b : 'unknown';
-    }
-    getAuthContext() {
-        var _a, _b;
-        return (_b = (_a = this.call) === null || _a === void 0 ? void 0 : _a.getAuthContext()) !== null && _b !== void 0 ? _b : null;
-    }
-}
-exports.ClientUnaryCallImpl = ClientUnaryCallImpl;
-class ClientReadableStreamImpl extends stream_1.Readable {
-    constructor(deserialize) {
-        super({ objectMode: true });
-        this.deserialize = deserialize;
-    }
-    cancel() {
-        var _a;
-        (_a = this.call) === null || _a === void 0 ? void 0 : _a.cancelWithStatus(constants_1.Status.CANCELLED, 'Cancelled on client');
-    }
-    getPeer() {
-        var _a, _b;
-        return (_b = (_a = this.call) === null || _a === void 0 ? void 0 : _a.getPeer()) !== null && _b !== void 0 ? _b : 'unknown';
-    }
-    getAuthContext() {
-        var _a, _b;
-        return (_b = (_a = this.call) === null || _a === void 0 ? void 0 : _a.getAuthContext()) !== null && _b !== void 0 ? _b : null;
-    }
-    _read(_size) {
-        var _a;
-        (_a = this.call) === null || _a === void 0 ? void 0 : _a.startRead();
-    }
-}
-exports.ClientReadableStreamImpl = ClientReadableStreamImpl;
-class ClientWritableStreamImpl extends stream_1.Writable {
-    constructor(serialize) {
-        super({ objectMode: true });
-        this.serialize = serialize;
-    }
-    cancel() {
-        var _a;
-        (_a = this.call) === null || _a === void 0 ? void 0 : _a.cancelWithStatus(constants_1.Status.CANCELLED, 'Cancelled on client');
-    }
-    getPeer() {
-        var _a, _b;
-        return (_b = (_a = this.call) === null || _a === void 0 ? void 0 : _a.getPeer()) !== null && _b !== void 0 ? _b : 'unknown';
-    }
-    getAuthContext() {
-        var _a, _b;
-        return (_b = (_a = this.call) === null || _a === void 0 ? void 0 : _a.getAuthContext()) !== null && _b !== void 0 ? _b : null;
-    }
-    _write(chunk, encoding, cb) {
-        var _a;
-        const context = {
-            callback: cb,
+        let resolveCallback;
+        let rejectCallback;
+        const callback = (err, response, next, rawResponse) => {
+            if (err) {
+                // If gRPC metadata exist, parsed google.rpc.status details.
+                if (err.metadata) {
+                    rejectCallback(googleError_1.GoogleError.parseGRPCStatusDetails(err));
+                }
+                else {
+                    rejectCallback(err);
+                }
+            }
+            else if (response !== undefined) {
+                resolveCallback([response, next || null, rawResponse || null]);
+            }
+            else {
+                throw new googleError_1.GoogleError('Neither error nor response are defined');
+            }
         };
-        const flags = Number(encoding);
-        if (!Number.isNaN(flags)) {
-            context.flags = flags;
-        }
-        (_a = this.call) === null || _a === void 0 ? void 0 : _a.sendMessageWithContext(context, chunk);
-    }
-    _final(cb) {
-        var _a;
-        (_a = this.call) === null || _a === void 0 ? void 0 : _a.halfClose();
-        cb();
-    }
-}
-exports.ClientWritableStreamImpl = ClientWritableStreamImpl;
-class ClientDuplexStreamImpl extends stream_1.Duplex {
-    constructor(serialize, deserialize) {
-        super({ objectMode: true });
-        this.serialize = serialize;
-        this.deserialize = deserialize;
-    }
-    cancel() {
-        var _a;
-        (_a = this.call) === null || _a === void 0 ? void 0 : _a.cancelWithStatus(constants_1.Status.CANCELLED, 'Cancelled on client');
-    }
-    getPeer() {
-        var _a, _b;
-        return (_b = (_a = this.call) === null || _a === void 0 ? void 0 : _a.getPeer()) !== null && _b !== void 0 ? _b : 'unknown';
-    }
-    getAuthContext() {
-        var _a, _b;
-        return (_b = (_a = this.call) === null || _a === void 0 ? void 0 : _a.getAuthContext()) !== null && _b !== void 0 ? _b : null;
-    }
-    _read(_size) {
-        var _a;
-        (_a = this.call) === null || _a === void 0 ? void 0 : _a.startRead();
-    }
-    _write(chunk, encoding, cb) {
-        var _a;
-        const context = {
-            callback: cb,
+        const promise = new Promise((resolve, reject) => {
+            resolveCallback = resolve;
+            rejectCallback = reject;
+        });
+        super(callback);
+        this.promise = promise;
+        this.promise.cancel = () => {
+            this.cancel();
         };
-        const flags = Number(encoding);
-        if (!Number.isNaN(flags)) {
-            context.flags = flags;
-        }
-        (_a = this.call) === null || _a === void 0 ? void 0 : _a.sendMessageWithContext(context, chunk);
-    }
-    _final(cb) {
-        var _a;
-        (_a = this.call) === null || _a === void 0 ? void 0 : _a.halfClose();
-        cb();
     }
 }
-exports.ClientDuplexStreamImpl = ClientDuplexStreamImpl;
+exports.OngoingCallPromise = OngoingCallPromise;
 //# sourceMappingURL=call.js.map

@@ -1,3 +1,4 @@
+"use strict";
 /**
  * Copyright 2020 Google LLC
  *
@@ -13,24 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export declare enum Status {
-    OK = 0,
-    CANCELLED = 1,
-    UNKNOWN = 2,
-    INVALID_ARGUMENT = 3,
-    DEADLINE_EXCEEDED = 4,
-    NOT_FOUND = 5,
-    ALREADY_EXISTS = 6,
-    PERMISSION_DENIED = 7,
-    RESOURCE_EXHAUSTED = 8,
-    FAILED_PRECONDITION = 9,
-    ABORTED = 10,
-    OUT_OF_RANGE = 11,
-    UNIMPLEMENTED = 12,
-    INTERNAL = 13,
-    UNAVAILABLE = 14,
-    DATA_LOSS = 15,
-    UNAUTHENTICATED = 16
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createAPICaller = createAPICaller;
+const normalApiCaller_1 = require("./normalCalls/normalApiCaller");
+function createAPICaller(settings, descriptor) {
+    if (!descriptor) {
+        return new normalApiCaller_1.NormalApiCaller();
+    }
+    return descriptor.getApiCaller(settings);
 }
-export declare const HttpCodeToRpcCodeMap: Map<number, Status>;
-export declare function rpcCodeFromHttpStatusCode(httpStatusCode: number): number;
+//# sourceMappingURL=apiCaller.js.map

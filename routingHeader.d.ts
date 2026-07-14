@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export declare enum Status {
-    OK = 0,
-    CANCELLED = 1,
-    UNKNOWN = 2,
-    INVALID_ARGUMENT = 3,
-    DEADLINE_EXCEEDED = 4,
-    NOT_FOUND = 5,
-    ALREADY_EXISTS = 6,
-    PERMISSION_DENIED = 7,
-    RESOURCE_EXHAUSTED = 8,
-    FAILED_PRECONDITION = 9,
-    ABORTED = 10,
-    OUT_OF_RANGE = 11,
-    UNIMPLEMENTED = 12,
-    INTERNAL = 13,
-    UNAVAILABLE = 14,
-    DATA_LOSS = 15,
-    UNAUTHENTICATED = 16
-}
-export declare const HttpCodeToRpcCodeMap: Map<number, Status>;
-export declare function rpcCodeFromHttpStatusCode(httpStatusCode: number): number;
+/**
+ * Helpers for constructing routing headers.
+ *
+ * These headers are used by Google infrastructure to determine how to route
+ * requests, especially for services that are regional.
+ *
+ * Generally, these headers are specified as gRPC metadata.
+ */
+/**
+ * Constructs the routing header from the given params
+ *
+ * @param {Object} params - the request header parameters.
+ * @return {string} the routing header value.
+ */
+export declare function fromParams(params: {
+    [index: string]: string | number | boolean;
+}): string;
