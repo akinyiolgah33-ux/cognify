@@ -1,26 +1,37 @@
 {
-    "name": "@types/ms",
-    "version": "2.1.0",
-    "description": "TypeScript definitions for ms",
-    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/ms",
-    "license": "MIT",
-    "contributors": [
-        {
-            "name": "Zhiyuan Wang",
-            "githubUsername": "danny8002",
-            "url": "https://github.com/danny8002"
-        }
-    ],
-    "main": "",
-    "types": "index.d.ts",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
-        "directory": "types/ms"
-    },
-    "scripts": {},
-    "dependencies": {},
-    "peerDependencies": {},
-    "typesPublisherContentHash": "2c8651ce1714fdc6bcbc0f262c93a790f1d127fb1c2dc8edbb583decef56fd39",
-    "typeScriptVersion": "5.0"
+  "name": "ms",
+  "version": "2.0.0",
+  "description": "Tiny milisecond conversion utility",
+  "repository": "zeit/ms",
+  "main": "./index",
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "precommit": "lint-staged",
+    "lint": "eslint lib/* bin/*",
+    "test": "mocha tests.js"
+  },
+  "eslintConfig": {
+    "extends": "eslint:recommended",
+    "env": {
+      "node": true,
+      "es6": true
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "npm run lint",
+      "prettier --single-quote --write",
+      "git add"
+    ]
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "3.19.0",
+    "expect.js": "0.3.1",
+    "husky": "0.13.3",
+    "lint-staged": "3.4.1",
+    "mocha": "3.4.1"
+  }
 }
