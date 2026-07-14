@@ -1,7 +1,6 @@
 /*! firebase-admin v12.7.0 */
 /*!
- * @license
- * Copyright 2017 Google Inc.
+ * Copyright 2020 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +15,10 @@
  * limitations under the License.
  */
 
-import * as admin from './default-namespace';
+/**
+ * Firebase namespaced API (legacy).
+ *
+ * @packageDocumentation
+ */
 
-declare module 'firebase-admin' {
-}
-
-export = admin;
+export * from './firebase-namespace-api';

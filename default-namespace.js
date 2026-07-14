@@ -1,4 +1,5 @@
 /*! firebase-admin v12.7.0 */
+"use strict";
 /*!
  * @license
  * Copyright 2017 Google Inc.
@@ -15,10 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import * as admin from './default-namespace';
-
-declare module 'firebase-admin' {
-}
-
-export = admin;
+const firebase_namespace_1 = require("./app/firebase-namespace");
+// Inject a circular default export to allow users to use both:
+//
+//   import firebaseAdmin from 'firebase-admin';
+//   which becomes: var firebaseAdmin = require('firebase-admin').default;
+//
+// as well as the more correct:
+//
+//   import * as firebaseAdmin from 'firebase-admin';
+//   which becomes: var firebaseAdmin = require('firebase-admin');
+firebase_namespace_1.defaultNamespace.default = firebase_namespace_1.defaultNamespace;
+module.exports = firebase_namespace_1.defaultNamespace;
